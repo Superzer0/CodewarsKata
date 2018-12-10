@@ -14,7 +14,6 @@ namespace JosephKata.NextBiggerNumber
         [TestCase(2071, 2017)]
         [TestCase(441, 414)]
         [TestCase(414, 144)]
-        [TestCase(1234567980, 1234567908)]
         public void Test1(int expected, int number)
         {
             Assert.AreEqual(expected, Kata.NextBiggerNumber(number));
