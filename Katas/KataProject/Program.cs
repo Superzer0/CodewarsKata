@@ -7,14 +7,14 @@ namespace Kata
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        /*private static void Main(string[] args)
         {
             Console.WriteLine("Nothing to see here");
             SynchronizationContext.SetSynchronizationContext(new MySynchornizationContext());
 
             ResumeWithoutContextAsync();
             Console.ReadKey();
-        }
+        }*/
 
         static async Task ResumeWithoutContextAsync([CallerFilePath] string file = null, [CallerMemberName] string memberName = null)
         {

@@ -4,6 +4,7 @@
     using NUnit.Framework;
 
     [TestFixture]
+    [Ignore("Not yet ready")]
     public class TortoiseTests {
 
         [Test]
