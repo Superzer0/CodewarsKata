@@ -117,7 +117,7 @@ namespace KataProject.TDD.Maze.Tests
         [Test]
         public void MazeAdapter_MovingInProperly_ExceptionThrownPositionNotUpdated()
         {
-            var inputTable = new int[,] { { 0 } };
+            var inputTable = new[,] { { 0 } };
             _fixture.Inject(inputTable);
             var start = (0, 0);
             var exit = (0, 0);
@@ -133,6 +133,38 @@ namespace KataProject.TDD.Maze.Tests
             sut.Invoking(p => p.MoveDown()).Should().Throw<InvalidOperationException>();
 
             sut.CurrentPosition.Should().Be(expectedPosition);
+        }
+
+        private static readonly IEnumerable<int[,]> MarkAsVisitedTestCases = new List<int[,]>
+        {
+            new[,] { { 0, 0, 0, 1 } },
+            new[,] { { 0, 0, 0 } },
+        };
+
+        [Test]
+        [TestCaseSource(nameof(MarkAsVisitedTestCases))]
+        public void MazeAdapter_MarkAsVisited_InfluencesCanMove(int[,] inputTable)
+        {
+            _fixture.Inject(inputTable);
+            var start = (0, 0);
+            var exit = (inputTable.GetLength(0) - 1, inputTable.GetLength(1) - 1);
+
+            var sut = CreateSut();
+
+            sut.SetStart(start).SetExit(exit);
+
+            sut.CanMoveRight().Should().BeTrue();
+            sut.MarkCurrentAsVisited();
+            sut.MoveRight();
+            sut.CanMoveLeft().Should().BeFalse();
+
+            sut.CanMoveRight().Should().BeTrue();
+            sut.MarkCurrentAsVisited();
+            sut.MoveRight();
+            sut.CanMoveLeft().Should().BeFalse();
+
+            sut.CanMoveRight().Should().BeFalse();
+            sut.CanMoveLeft().Should().BeFalse();
         }
     }
 }

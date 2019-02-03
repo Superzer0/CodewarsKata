@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace KataProject.TDD.Maze
 {
@@ -13,11 +14,13 @@ namespace KataProject.TDD.Maze
         bool CanMoveUp();
         bool CanMoveDown();
         bool CanMoveRight();
+        void MarkCurrentAsVisited();
     }
 
     internal class MazeTraversingAdapter : IMazeTraversingAdapter
     {
         private readonly IMaze _maze;
+        private readonly HashSet<(int, int)> _hashSet = new HashSet<(int, int)>();
 
         public MazeTraversingAdapter(IMaze maze)
         {
@@ -30,7 +33,7 @@ namespace KataProject.TDD.Maze
             CurrentPosition = start;
             return this;
         }
-        
+
         public IMaze SetExit((int, int) exit)
         {
             _maze.SetExit(exit);
@@ -58,11 +61,16 @@ namespace KataProject.TDD.Maze
         public bool CanMoveUp() => CanMakeMove(UpCoordinate);
         public bool CanMoveDown() => CanMakeMove(DownCoordinate);
         public bool CanMoveRight() => CanMakeMove(RightCoordinate);
-       
+
+        public void MarkCurrentAsVisited()
+        {
+            _hashSet.Add(CurrentPosition);
+        }
+
         private bool CanMakeMove(Func<(int, int)> coordinates)
         {
             var (proposedX, proposedY) = coordinates();
-            return IsMoveOk(proposedX, proposedY);
+            return IsMoveOk(proposedX, proposedY) && !_hashSet.Contains((proposedX, proposedY));
         }
 
         private void MakeMove(Func<(int, int)> coordinates)

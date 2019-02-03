@@ -25,6 +25,9 @@ namespace KataProject.TDD.Maze
             var solution = new List<(int x, int y)>();
 
             var hasSolution = TraverseMaze(mazeTraversing, solution);
+            solution.Reverse();
+            solution.Add(maze.Exit); // exit is added manually as we do not move into this cell in traverse
+
             var result = new MazeSolution
             {
                 ExitFound = hasSolution,
@@ -34,8 +37,10 @@ namespace KataProject.TDD.Maze
             return result;
         }
 
-        private bool TraverseMaze(IMazeTraversingAdapter maze, List<(int x, int y)> solution)
+        private static bool TraverseMaze(IMazeTraversingAdapter maze, ICollection<(int x, int y)> solution)
         {
+            maze.MarkCurrentAsVisited();
+
             if (maze.CurrentPosition == maze.Exit)
                 return true;
 
@@ -43,10 +48,11 @@ namespace KataProject.TDD.Maze
             {
                 maze.MoveRight();
                 var isGoodDirection = TraverseMaze(maze, solution);
-                maze.MoveLeft();  
+                maze.MoveLeft();
                 if (isGoodDirection)
                 {
                     solution.Add(maze.CurrentPosition);
+                    return true;
                 }
             }
 
@@ -58,9 +64,10 @@ namespace KataProject.TDD.Maze
                 if (isGoodDirection)
                 {
                     solution.Add(maze.CurrentPosition);
+                    return true;
                 }
             }
-           
+
             if (maze.CanMoveDown())
             {
                 maze.MoveDown();
@@ -69,6 +76,7 @@ namespace KataProject.TDD.Maze
                 if (isGoodDirection)
                 {
                     solution.Add(maze.CurrentPosition);
+                    return true;
                 }
             }
 
@@ -80,6 +88,7 @@ namespace KataProject.TDD.Maze
                 if (isGoodDirection)
                 {
                     solution.Add(maze.CurrentPosition);
+                    return true;
                 }
             }
 

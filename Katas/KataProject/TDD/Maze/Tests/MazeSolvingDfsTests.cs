@@ -97,7 +97,7 @@ namespace KataProject.TDD.Maze.Tests
             var inputMaze = new[,] { { 0 } };
             var mazeStart = (0, 0);
             var mazeExit = (0, 0);
-            var expected = new List<(int, int)> { };
+            var expected = new List<(int, int)> { mazeExit };
 
             var sut = CreateSut();
             var maze = sut.CreateMaze(inputMaze);
@@ -110,12 +110,13 @@ namespace KataProject.TDD.Maze.Tests
         }
 
         [Test]
-        public void SolveMaze_OneDimensionalMaze_ProperSolutionReturned()
+        [TestCaseSource(nameof(SolvableTestCases))]
+        public void SolveMaze_SolvableMaze_ProperSolutionReturned(MazeSolverTestCase testCase)
         {
-            var inputMaze = new[,] { { 0, 0, 0 } };
+            var inputMaze = testCase.InputMaze;
             var mazeStart = (0, 0);
-            var mazeExit = (0, inputMaze.Length);
-            var expectedResult = new List<(int x, int y)> { (0, 0), (0, 1), (0, 2) };
+            var mazeExit = (inputMaze.GetLength(0) - 1, inputMaze.GetLength(1) - 1);
+            var expectedResult = testCase.ExpectedResult;
 
             var sut = CreateSut();
             var maze = sut.CreateMaze(inputMaze);
@@ -126,5 +127,71 @@ namespace KataProject.TDD.Maze.Tests
             result.ExitFound.Should().BeTrue();
             result.Path.ToList().Should().BeEquivalentTo(expectedResult, options => options.WithStrictOrdering());
         }
+
+        [Test]
+        [TestCaseSource(nameof(NonSolvableTestCases))]
+        public void SolveMaze_NonSolvableMaze_ProperSolutionReturned(MazeSolverTestCase testCase)
+        {
+            var inputMaze = testCase.InputMaze;
+            var mazeStart = (0, 0);
+            var mazeExit = (inputMaze.GetLength(0) - 1, inputMaze.GetLength(1) - 1);
+            var expectedResult = testCase.ExpectedResult;
+
+            var sut = CreateSut();
+            var maze = sut.CreateMaze(inputMaze);
+            maze.SetStart(mazeStart).SetExit(mazeExit);
+
+            var result = sut.SolveMaze(maze);
+
+            result.ExitFound.Should().BeFalse();
+            result.Path.ToList().Should().BeEquivalentTo(expectedResult, options => options.WithStrictOrdering());
+        }
+
+        private static readonly List<MazeSolverTestCase> SolvableTestCases = new List<MazeSolverTestCase>
+        {
+            new MazeSolverTestCase
+            {
+                ExpectedResult = new List<(int x, int y)> {(0, 0), (0, 1), (0, 2)},
+                InputMaze = new[,] {{0, 0, 0}}
+            },
+            new MazeSolverTestCase
+            {
+                ExpectedResult = new List<(int x, int y)>
+                    {(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (1, 4), (2, 4), (3, 4), (3, 5)},
+                InputMaze = new[,]
+                {
+                    {0, 0, 0, 0, 0, 1},
+                    {1, 1, 0, 1, 0, 1},
+                    {0, 1, 0, 1, 0, 1},
+                    {0, 1, 1, 1, 0, 0}
+                }
+            }
+        };
+
+        private static readonly List<MazeSolverTestCase> NonSolvableTestCases = new List<MazeSolverTestCase>
+        {
+            new MazeSolverTestCase
+            {
+                ExpectedResult = new List<(int x, int y)>(),
+                InputMaze = new[,] {{0, 1, 0}}
+            },
+            new MazeSolverTestCase
+            {
+                ExpectedResult = new List<(int x, int y)>(),
+                InputMaze = new[,]
+                {
+                    {0, 0, 0, 0, 0, 1},
+                    {1, 1, 0, 1, 0, 1},
+                    {0, 1, 0, 1, 0, 1},
+                    {0, 1, 1, 1, 1, 0}
+                }
+            }
+        };
+    }
+
+    public class MazeSolverTestCase
+    {
+        public int[,] InputMaze { get; set; }
+        public List<(int x, int y)> ExpectedResult { get; set; }
     }
 }
