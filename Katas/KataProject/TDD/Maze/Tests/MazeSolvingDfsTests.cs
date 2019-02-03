@@ -18,7 +18,7 @@ namespace KataProject.TDD.Maze.Tests
             _fixture = new Fixture();
         }
 
-        private static MazeSolvingDfs CreateSut()
+        private static IMazeSolver CreateSut()
         {
             return new MazeSolvingDfs();
         }
@@ -75,20 +75,56 @@ namespace KataProject.TDD.Maze.Tests
 
 
         [Test]
-        [Ignore("Waiting for implementation")]
-        public void SolveMaze_OneDimensionalMaze_ProperSolutionReturned()
+        public void SolveMaze_NoSolutionMaze_EmptyListReturned()
         {
-            var inputMaze = new[,] { { 0, 0, 0 } };
+            var inputMaze = new[,] { { 1, 1, 1 } };
             var mazeStart = (0, 0);
-            var mazeExit = (0, inputMaze.Length);
-            var expectedResult = new List<(int x, int y)> {(0, 0), (0, 1), (0, 2)};
+            var mazeExit = (0, inputMaze.GetLength(1) - 1);
 
             var sut = CreateSut();
             var maze = sut.CreateMaze(inputMaze);
             maze.SetStart(mazeStart).SetExit(mazeExit);
 
             var result = sut.SolveMaze(maze);
-            result.ToList().Should().BeSameAs(expectedResult);
+
+            result.ExitFound.Should().BeFalse();
+            result.Path.ToList().Should().BeEmpty();
+        }
+
+        [Test]
+        public void SolveMaze_OneElementMaze_ExitElementReturned()
+        {
+            var inputMaze = new[,] { { 0 } };
+            var mazeStart = (0, 0);
+            var mazeExit = (0, 0);
+            var expected = new List<(int, int)> { };
+
+            var sut = CreateSut();
+            var maze = sut.CreateMaze(inputMaze);
+            maze.SetStart(mazeStart).SetExit(mazeExit);
+
+            var result = sut.SolveMaze(maze);
+
+            result.ExitFound.Should().BeTrue();
+            result.Path.ToList().Should().BeEquivalentTo(expected, options => options.WithStrictOrdering());
+        }
+
+        [Test]
+        public void SolveMaze_OneDimensionalMaze_ProperSolutionReturned()
+        {
+            var inputMaze = new[,] { { 0, 0, 0 } };
+            var mazeStart = (0, 0);
+            var mazeExit = (0, inputMaze.Length);
+            var expectedResult = new List<(int x, int y)> { (0, 0), (0, 1), (0, 2) };
+
+            var sut = CreateSut();
+            var maze = sut.CreateMaze(inputMaze);
+            maze.SetStart(mazeStart).SetExit(mazeExit);
+
+            var result = sut.SolveMaze(maze);
+
+            result.ExitFound.Should().BeTrue();
+            result.Path.ToList().Should().BeEquivalentTo(expectedResult, options => options.WithStrictOrdering());
         }
     }
 }

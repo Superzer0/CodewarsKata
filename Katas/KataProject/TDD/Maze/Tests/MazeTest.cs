@@ -17,19 +17,28 @@ namespace KataProject.TDD.Maze.Tests
             _fixture = new Fixture();
         }
 
-        private static IEnumerable<Func<IFixture, IMaze>> _testCases = new List<Func<IFixture, IMaze>>
+        private static readonly IEnumerable<Func<IFixture, IMaze>> TestCases = new List<Func<IFixture, IMaze>>
         {
             fixture => new MazeSolvingDfs().CreateMaze(fixture.Create<int[,]>()),
             fixture => new MazeTraversingAdapter(new MazeSolvingDfs().CreateMaze(fixture.Create<int[,]>()))
         };
-        
+
         [Test]
-        [TestCaseSource(nameof(_testCases))]
+        [TestCaseSource(nameof(TestCases))]
+        public void Maze_IsEmpty_ExceptionIsThrown(Func<IFixture, IMaze> createSut)
+        {
+            var anonymousInputTable = new int[0, 0];
+            _fixture.Inject(anonymousInputTable);
+            createSut.Invoking(p => p(_fixture)).Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        [TestCaseSource(nameof(TestCases))]
         public void Maze_SetStartAndFinish_Correctly(Func<IFixture, IMaze> createSut)
         {
-            var anonymousInputTable = _fixture.Freeze<int[][]>();
+            var anonymousInputTable = _fixture.Freeze<int[,]>();
             var start = (0, 0);
-            var exit = (anonymousInputTable.Length - 1, anonymousInputTable[0].Length - 1);
+            var exit = (anonymousInputTable.GetLength(0) - 1, anonymousInputTable.GetLength(1) - 1);
 
             var sut = createSut(_fixture);
 
@@ -41,12 +50,12 @@ namespace KataProject.TDD.Maze.Tests
         }
 
         [Test]
-        [TestCaseSource(nameof(_testCases))]
+        [TestCaseSource(nameof(TestCases))]
         public void Maze_SetStartAndFinish_OutOfBounds_ExceptionThrown(Func<IFixture, IMaze> createSut)
         {
-            var anonymousInputTable = _fixture.Freeze<int[][]>();
+            var anonymousInputTable = _fixture.Freeze<int[,]>();
             var anonymousLowerBoundCoordinate = (-1, -1);
-            var anonymousUpperBoundCoordinate = (anonymousInputTable.Length + 1, anonymousInputTable[0].Length + 1);
+            var anonymousUpperBoundCoordinate = (anonymousInputTable.GetLength(0) + 1, anonymousInputTable.GetLength(1) + 1);
 
             var sut = createSut(_fixture);
 
@@ -58,12 +67,12 @@ namespace KataProject.TDD.Maze.Tests
         }
 
         [Test]
-        [TestCaseSource(nameof(_testCases))]
+        [TestCaseSource(nameof(TestCases))]
         public void Maze_ImplementsIndexer(Func<IFixture, IMaze> createSut)
         {
-            var anonymousInputTable = _fixture.Freeze<int[][]>();
+            var anonymousInputTable = _fixture.Freeze<int[,]>();
             var expectedValue = _fixture.Create<int>();
-            anonymousInputTable[0][0] = expectedValue;
+            anonymousInputTable[0, 0] = expectedValue;
 
             var sut = createSut(_fixture);
 

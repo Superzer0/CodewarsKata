@@ -19,7 +19,13 @@ namespace KataProject.TDD.Maze
 
         internal Maze(int[,] inputTable)
         {
-            _inputTable = inputTable ?? throw new ArgumentNullException(nameof(inputTable)); ;
+            if (inputTable == null)
+                throw new ArgumentNullException(nameof(inputTable));
+
+            if (inputTable.Length == 0)
+                throw new ArgumentException("Maze cannot be empty", nameof(inputTable));
+
+            _inputTable = inputTable;
         }
 
         public IMaze SetStart((int, int) start)
