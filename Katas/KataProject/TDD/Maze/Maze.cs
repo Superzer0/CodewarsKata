@@ -9,6 +9,8 @@ namespace KataProject.TDD.Maze
         (int x, int y) Start { get; }
         (int x, int y) Exit { get; }
         int this[int i, int y] { get; }
+        int DimensionX { get; }
+        int DimensionY { get; }
     }
 
     internal class Maze : IMaze
@@ -37,7 +39,9 @@ namespace KataProject.TDD.Maze
         public (int x, int y) Start { get; private set; }
         public (int x, int y) Exit { get; private set; }
 
-        public int this[int x, int y] => _inputTable[x,y];
+        public int this[int x, int y] => _inputTable[x, y];
+        public int DimensionX => _inputTable.GetLength(0);
+        public int DimensionY => _inputTable.GetLength(1);
 
         private void IsCoordinateCorrect((int x, int y) point)
         {
@@ -47,10 +51,10 @@ namespace KataProject.TDD.Maze
             if (point.y < 0)
                 throw new ArgumentException("Cannot be < 0", nameof(point.y));
 
-            if (point.x >= _inputTable.GetLength(0))
+            if (point.x >= DimensionX)
                 throw new ArgumentException("Cannot be greater than maze x index", nameof(point.x));
 
-            if (point.y >= _inputTable.GetLength(1))
+            if (point.y >= DimensionY)
                 throw new ArgumentException("Cannot be greater than maze y index", nameof(point.y));
         }
     }

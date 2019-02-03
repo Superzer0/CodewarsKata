@@ -7,7 +7,6 @@ namespace KataProject.TDD.Maze
     {
         IMaze CreateMaze(int[,] inputTable);
         IEnumerable<(int x, int y)> SolveMaze(IMaze maze);
-
     }
 
     public class MazeSolvingDfs : IMazeSolver
@@ -22,7 +21,14 @@ namespace KataProject.TDD.Maze
             if (maze == null)
                 throw new ArgumentNullException(nameof(maze));
 
+            IMazeTraversingAdapter mazeTraversing = new MazeTraversingAdapter(maze);
+
+
+
             return new List<(int x, int y)>();
         }
+
+
+
     }
 }

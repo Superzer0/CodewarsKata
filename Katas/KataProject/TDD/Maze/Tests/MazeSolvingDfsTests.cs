@@ -75,6 +75,7 @@ namespace KataProject.TDD.Maze.Tests
 
 
         [Test]
+        [Ignore("Waiting for implementation")]
         public void SolveMaze_OneDimensionalMaze_ProperSolutionReturned()
         {
             var inputMaze = new[,] { { 0, 0, 0 } };

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
@@ -16,19 +17,21 @@ namespace KataProject.TDD.Maze.Tests
             _fixture = new Fixture();
         }
 
-        private IMaze CreateSut()
+        private static IEnumerable<Func<IFixture, IMaze>> _testCases = new List<Func<IFixture, IMaze>>
         {
-            return new MazeSolvingDfs().CreateMaze(_fixture.Create<int[,]>());
-        }
-
+            fixture => new MazeSolvingDfs().CreateMaze(fixture.Create<int[,]>()),
+            fixture => new MazeTraversingAdapter(new MazeSolvingDfs().CreateMaze(fixture.Create<int[,]>()))
+        };
+        
         [Test]
-        public void Maze_SetStartAndFinish_Correctly()
+        [TestCaseSource(nameof(_testCases))]
+        public void Maze_SetStartAndFinish_Correctly(Func<IFixture, IMaze> createSut)
         {
             var anonymousInputTable = _fixture.Freeze<int[][]>();
             var start = (0, 0);
             var exit = (anonymousInputTable.Length - 1, anonymousInputTable[0].Length - 1);
 
-            var sut = CreateSut();
+            var sut = createSut(_fixture);
 
             sut.SetStart(start)
                 .SetExit(exit);
@@ -38,13 +41,14 @@ namespace KataProject.TDD.Maze.Tests
         }
 
         [Test]
-        public void Maze_SetStartAndFinish_OutOfBounds_ExceptionThrown()
+        [TestCaseSource(nameof(_testCases))]
+        public void Maze_SetStartAndFinish_OutOfBounds_ExceptionThrown(Func<IFixture, IMaze> createSut)
         {
             var anonymousInputTable = _fixture.Freeze<int[][]>();
             var anonymousLowerBoundCoordinate = (-1, -1);
             var anonymousUpperBoundCoordinate = (anonymousInputTable.Length + 1, anonymousInputTable[0].Length + 1);
 
-            var sut = CreateSut();
+            var sut = createSut(_fixture);
 
             sut.Invoking(p => p.SetStart(anonymousLowerBoundCoordinate)).Should().Throw<ArgumentException>();
             sut.Invoking(p => p.SetExit(anonymousLowerBoundCoordinate)).Should().Throw<ArgumentException>();
@@ -54,13 +58,14 @@ namespace KataProject.TDD.Maze.Tests
         }
 
         [Test]
-        public void Maze_ImplementsIndexer()
+        [TestCaseSource(nameof(_testCases))]
+        public void Maze_ImplementsIndexer(Func<IFixture, IMaze> createSut)
         {
             var anonymousInputTable = _fixture.Freeze<int[][]>();
             var expectedValue = _fixture.Create<int>();
             anonymousInputTable[0][0] = expectedValue;
 
-            var sut = CreateSut();
+            var sut = createSut(_fixture);
 
             sut[0, 0].Should().Be(expectedValue);
         }
