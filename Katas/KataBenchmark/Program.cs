@@ -10,9 +10,6 @@ namespace KataBenchmark
 
         [Benchmark()]
         public string My() => SumFractions.SumFracts(data);
-
-        [Benchmark]
-        public string OtherGuy() => SumFractionsOther.SumFracts(data);
     }
 
     class Program
