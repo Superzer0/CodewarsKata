@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,14 +8,13 @@ namespace Kata
 {
     internal static class Program
     {
-        /*private static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Nothing to see here");
-            SynchronizationContext.SetSynchronizationContext(new MySynchornizationContext());
+            int[,] fractions = new int[,] { { 1, 2 }, { 1, 3 }, { 1, 4 } };
+            var output = SumFractions.SumFracts(fractions);
+            System.Console.WriteLine(output);
 
-            ResumeWithoutContextAsync();
-            Console.ReadKey();
-        }*/
+        }
 
         static async Task ResumeWithoutContextAsync([CallerFilePath] string file = null, [CallerMemberName] string memberName = null)
         {
@@ -24,8 +24,6 @@ namespace Kata
             // This method discards its context when it resumes.
         }
     }
-
-
 
     class MySynchornizationContext : SynchronizationContext
     {
