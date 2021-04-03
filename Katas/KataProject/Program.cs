@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace Kata
         {
             int[,] fractions = new int[,] { { 1, 2 }, { 1, 3 }, { 1, 4 } };
             var output = SumFractions.SumFracts(fractions);
-            System.Console.WriteLine(output);
+            Console.WriteLine(output);
 
         }
 
