@@ -20,5 +20,6 @@
     <Folder Include="AlgLo\" />
     <Folder Include="AlgLo\NaturalNumersGenerator\" />
     <Folder Include="AlgLo\NextBiggerNumber\" />
+    <Folder Include="AlgLo\ModularMultiplcativeInverse\" />
   </ItemGroup>
 </Project>

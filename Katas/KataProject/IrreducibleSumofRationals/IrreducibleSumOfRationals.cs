@@ -1,5 +1,3 @@
-using System;
-
 /*
 https://www.codewars.com/kata/5517fcb0236c8826940003c9/train/csharp
 */
@@ -49,11 +47,11 @@ public class SumFractions
         {
             if (a < b)
             {
-                b = b - a;
+                b -= a;
             }
             else
             {
-                a = a - b;
+                a -= b;
             }
         }
         return a;
