@@ -10,7 +10,7 @@ namespace KataProject.TDD.Maze.Tests
     [TestFixture]
     public class MazeSolvingDfsTests
     {
-        private IFixture _fixture;
+        private IFixture? _fixture;
 
         [SetUp]
         public void Setup()

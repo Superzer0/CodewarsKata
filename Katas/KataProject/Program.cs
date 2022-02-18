@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Kata.CSharpTutorial.Eight;
+using KataProject.CSharpTutorial.Tutorials;
 
 namespace Kata
 {
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            /*
             int[,] fractions = new int[,] { { 1, 2 }, { 1, 3 }, { 1, 4 } };
             var output = SumFractions.SumFracts(fractions);
             Console.WriteLine(output);
-
+            */
+            NumberStore.Run();
         }
 
         static async Task ResumeWithoutContextAsync([CallerFilePath] string file = null, [CallerMemberName] string memberName = null)
